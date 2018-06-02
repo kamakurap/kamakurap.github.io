@@ -5,6 +5,7 @@ var cleanCSS = require('gulp-clean-css');
 var rename = require("gulp-rename");
 var uglify = require('gulp-uglify');
 var pkg = require('./package.json');
+var imagemin = require('gulp-imagemin');
 var browserSync = require('browser-sync').create();
 
 // Set the banner content
@@ -107,8 +108,25 @@ gulp.task('js:minify', function() {
 // JS
 gulp.task('js', ['js:minify']);
 
+// images
+gulp.task('img', () =>
+    gulp.src('./img/original/*')
+        .pipe(imagemin([
+          imagemin.gifsicle({interlaced: true}),
+          imagemin.jpegtran({progressive: true}),
+          imagemin.optipng({optimizationLevel: 5}),
+          imagemin.svgo({
+            plugins: [
+              {removeViewBox: true},
+              {cleanupIDs: false}
+            ]
+          })
+        ]))
+        .pipe(gulp.dest('./img/web'))
+);
+
 // Default task
-gulp.task('default', ['css', 'js', 'vendor']);
+gulp.task('default', ['css', 'js', 'vendor', 'img']);
 
 // Configure the browserSync task
 gulp.task('browserSync', function() {
@@ -120,8 +138,9 @@ gulp.task('browserSync', function() {
 });
 
 // Dev task
-gulp.task('dev', ['css', 'js', 'browserSync'], function() {
+gulp.task('dev', ['css', 'js', 'img', 'browserSync'], function() {
   gulp.watch('./scss/*.scss', ['css']);
   gulp.watch('./js/*.js', ['js']);
+  gulp.watch('./img/original/*', ['img'])
   gulp.watch('./*.html', browserSync.reload);
 });
