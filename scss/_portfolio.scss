@@ -56,4 +56,25 @@
       }
     }
   }
+  @media (max-width: 768px) {
+    .portfolio-box-caption {
+      opacity: 0.7;
+      .portfolio-box-caption-content {
+        .project-category {
+          font-size: 16px;
+        }
+        .project-name {
+          font-size: 22px;
+        }
+      }
+    }
+    &:hover {
+      .portfolio-box-caption {
+        opacity: 0;
+      }
+    }
+    &:focus {
+      outline: none;
+    }
+  }
 }
